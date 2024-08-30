@@ -1,0 +1,25 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  username: String!
+  mail: String!
+}
+
+type UpdateResponse {
+  statusCode: Int!
+  message: String!
+}
+
+type Query {
+  getAllUsers: [User!]!
+  singleUserGet(id: String!): User
+}
+
+type Mutation {
+  register(password: String!, mail: String!, username: String!): User
+  login(password: String!, mail: String!): String!
+  update(mail: String!, username: String!, id: String!): UpdateResponse!
+}
