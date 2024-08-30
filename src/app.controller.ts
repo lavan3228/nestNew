@@ -2,6 +2,7 @@ import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller('/cache')
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
