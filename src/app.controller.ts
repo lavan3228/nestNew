@@ -8,7 +8,21 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    console.log('hello world!!!');
     return this.appService.getHello();
+  }
+
+  @Get('/set')
+  async setCache() {
+    console.log('hi');
+    await this.appService.setTestCache();
+    return 'Cache set';
+  }
+
+  @Get('/get')
+  async getCache() {
+    const value = await this.appService.getTestCache();
+    return { value };
   }
 
   // @Post()

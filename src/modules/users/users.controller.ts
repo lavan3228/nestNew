@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, HttpCode, UploadedFile, UseInterceptors, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, HttpCode, UploadedFile, UseInterceptors, Put, Logger } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/common';
 
 @Controller('users')
-// @UseInterceptors(CacheInterceptor)
+@UseInterceptors(CacheInterceptor)
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) { }
 
   @Post("register")
@@ -45,11 +46,12 @@ export class UsersController {
   }
 
   @Get('/all')
-  // @CacheKey('users')
+  @CacheKey('users')
+  @CacheTTL(3600)
   async getAllUsers() {
-    console.log('get jsonPlaceholder data');
-    
+    this.logger.log('Fetching users from service');
     const data = await this.usersService.getUsers();
+    this.logger.log('Data fetched and cached');
     return {
       success: true,
       status: 200,

@@ -149,11 +149,12 @@ export class UsersService {
 
   async getUsers() {
     try {
+      console.log('get jsonPlaceholder data');
       const response = await axios.get('https://jsonplaceholder.typicode.com/users');
       return response.data;
     } catch (error) {
       // Handle error appropriately
-      throw new Error('Error fetching users');
+      throw new Error('Error fetching users');  
     }
   }
 

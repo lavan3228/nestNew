@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { User } from './modules/users/users.graphql';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { UsersModule } from './modules/users/users.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import {CacheModule, CacheInterceptor } from '@nestjs/common';
+import * as redisStore from 'cache-manager-redis-store';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 // import { CacheModule } from '@nestjs/cache-manager';
-// import * as redisStore from 'cache-manager-redis-store';
 
 
 @Module({
@@ -27,16 +28,19 @@ import { AppService } from './app.service';
       autoSchemaFile: 'src/schema.gql',
     }),
     FileUploadModule,
-    // CacheModule.register({
-    //   max: 100,
-    //   ttl: 0,
-    //   isGlobal: true,
-    //   store: redisStore,
-    //   host: '172.17.0.2',
-    //   port: 6379,
-    // }),
+    CacheModule.register({  
+      ttl: 600,
+      isGlobal: true,
+      store: redisStore as any,
+      host: 'localhost',
+      port: 6379,
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService, {
+    provide: APP_INTERCEPTOR,
+    useClass: CacheInterceptor,
+  },]
 })
-export class AppModule {}
+
+export class AppModule { }
